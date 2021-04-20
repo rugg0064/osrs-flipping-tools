@@ -2,7 +2,7 @@ import requests
 import json
 url = 'http://prices.runescape.wiki/api/v1/osrs/latest'
 headers = {
-    'User-Agent': 'Potion decanting checker - Discord Rugg#4267'
+    'User-Agent': 'Potion decanting checker - Written by Rugg @ Discord Rugg#4267'
 }
 params = {}
 response = requests.get(url, headers=headers, params=params)
