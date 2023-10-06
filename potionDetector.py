@@ -294,7 +294,7 @@ def getMostEfficientPotion(genericPotionName: str):
         print(price)
 
 
-getMostEfficientPotion("Menaphite remedy")
+getMostEfficientPotion("Ranging potion")
 #getMostProfitablePotionDecants()
 
 '''
