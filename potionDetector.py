@@ -240,32 +240,32 @@ hour_prices = helper.get_1h_prices()
 def getMostProfitablePotionDecants():
     profits = []
     for itemGeneralName, subItemDict in items.items():
-        for dose1, item1name in subItemDict.items():
-                id1 = name_to_id[item1name]
-                for dose2, item2name in subItemDict.items():
-                    id2 = name_to_id[item2name]
-                    if not(str(id1) in latestPrices and str(id2) in latestPrices):
+        for buyDoseCount, buyItemName in subItemDict.items():
+                buyItemId = name_to_id[buyItemName]
+                for sellDoseCount, sellItemName in subItemDict.items():
+                    sellItemId = name_to_id[sellItemName]
+                    if not(str(buyItemId) in latestPrices and str(sellItemId) in latestPrices):
                         continue
-                    price1Buy = latestPrices[str(id1)]['low']
-                    price2Sell= latestPrices[str(id1)]['high']
-                    pricePerDose1Buy = price1Buy / dose1
-                    pricePerDose1Sell = getTaxedPrice(price2Sell) / dose2
-                    profitMultiplier = pricePerDose1Sell/pricePerDose1Buy
+                    priceBuy = latestPrices[str(buyItemId)]['low']
+                    priceSell= latestPrices[str(buyItemId)]['high']
+                    buyPricePerDose = priceBuy / buyDoseCount
+                    sellPricePerDose = getTaxedPrice(priceSell) / sellDoseCount
+                    profitMultiplier = sellPricePerDose / buyPricePerDose
                     
-                    if((pricePerDose1Buy < pricePerDose1Sell) 
-                        and str(id1) in hour_prices 
-                        and hour_prices[str(id1)]['highPriceVolume'] > 50
-                        and str(id2) in hour_prices
-                        and hour_prices[str(id2)]['highPriceVolume'] > 50):
+                    if((buyPricePerDose < sellPricePerDose) 
+                        and str(buyItemId) in hour_prices 
+                        and hour_prices[str(buyItemId)]['highPriceVolume'] > 50
+                        and str(sellItemId) in hour_prices
+                        and hour_prices[str(sellItemId)]['highPriceVolume'] > 50):
                         profits.append({
                             'name': itemGeneralName,
-                            'dose1': dose1,
-                            'dose2' : dose2,
+                            'dose1': buyDoseCount,
+                            'dose2' : sellDoseCount,
                             'profitMultiplier': profitMultiplier,
-                            'buy': price1Buy,
-                            'sell': price2Sell,
-                            'buyPerDose': pricePerDose1Buy,
-                            'sellPerDose': pricePerDose1Sell
+                            'buy': priceBuy,
+                            'sell': priceSell,
+                            'buyPerDose': buyPricePerDose,
+                            'sellPerDose': sellPricePerDose
                         })
                         #print(itemGeneralName, dose1, dose2, profitMultiplier)
     sorted_profits = sorted(profits, key=lambda x: x['profitMultiplier'], reverse=True)
@@ -273,6 +273,9 @@ def getMostProfitablePotionDecants():
         print(item)
 
 def getMostEfficientPotion(genericPotionName: str):
+    if not genericPotionName in items:
+        print("Item not found")
+        return
     print(f'Most efficient potion for {genericPotionName}')
     prices = []
     for dose, name in items[genericPotionName].items():
@@ -294,9 +297,8 @@ def getMostEfficientPotion(genericPotionName: str):
         print(price)
 
 
-getMostEfficientPotion("Ranging potion")
-#getMostProfitablePotionDecants()
-
+#getMostEfficientPotion("Menaphite remedy")
+getMostProfitablePotionDecants()
 '''
 for i in items:
     volumeData = None 
